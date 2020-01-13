@@ -19,7 +19,7 @@ const db = config.get('mongoURI');
 // 	}
 // };
 
-connectDB = () => mongoose.connect(db, { 
+connectDB = ()  => mongoose.connect(db, { 
 	useNewUrlParser: true,
 	useCreateIndex: true,
 	useFindAndModify: false,
