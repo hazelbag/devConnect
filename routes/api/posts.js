@@ -101,7 +101,7 @@ router.put('/like/:id', auth, async (req, res) => {
         const post = await Post.findById(req.params.id);
         // Check if liked before to prevent multiple likes on one post
         if (post.likes.filter(like => like.user.toString() === req.user.id).length > 0) {
-            return res.json(400).json({ msg: 'Post already liked' });
+            return res.status(400).json({ msg: 'Post already liked' });
         }
         post.likes.unshift({ user: req.user.id });
         await post.save();
