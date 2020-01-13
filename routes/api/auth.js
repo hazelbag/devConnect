@@ -40,15 +40,15 @@ router.post(
 
         try {
             let user = await User.findOne({ email });
-
+            // If there is no user with the email return an error
             if (!user) {
                 return res
                     .status(400)
                     .json({ errors: [{ msg: 'Invalid Credentials' }] });
             }
-
+            // Check to see if entered password matches crypted password
             const isMatch = await bcrypt.compare(password, user.password);
-
+            // If it does not match return an error
             if (!isMatch) {
                 return res
                     .status(400)
