@@ -5,7 +5,9 @@ import {
     UPDATE_PROFILE,
     PROFILE_ERROR,
     CLEAR_PROFILE,
-    ACCOUNT_DELETED
+    ACCOUNT_DELETED,
+    GET_PROFILES,
+    GET_REPOS
 } from './types';
 
 // Get current users profile
@@ -25,23 +27,79 @@ export const getCurrentProfile = () => async dispatch => {
     }
 };
 
+// Get all profiles
+export const getProfiles = () => async dispatch => {
+    dispatch({ type: CLEAR_PROFILE});
+    try {
+        const res = await axios.get('/api/profile');
+
+        dispatch({
+            type: GET_PROFILES,
+            payload: res.data
+        });
+    } catch (err) {
+        dispatch({
+            type: PROFILE_ERROR,
+            payload: { msg: err.response.statusText, status: err.response.status }
+        });
+    }
+};
+
+// Get Github repos
+export const getGithubRepos = username => async dispatch => {
+    try {
+        const res = await axios.get(`/api/profile/github/${username}`);
+
+        dispatch({
+            type: GET_REPOS,
+            payload: res.data
+        });
+    } catch (err) {
+        dispatch({
+            type: PROFILE_ERROR,
+            payload: { msg: err.response.statusText, status: err.response.status }
+        });
+    }
+};
+
+// Get profiles by ID
+export const getProfileById = userId => async dispatch => {
+    try {
+      const res = await axios.get(`/api/profile/user/${userId}`);
+  
+      dispatch({
+        type: GET_PROFILE,
+        payload: res.data
+      });
+    } catch (err) {
+      dispatch({
+        type: PROFILE_ERROR,
+        payload: { msg: err.response.statusText, status: err.response.status }
+      });
+    }
+  };
+
 // Create or update profile
 export const createProfile = (formData, history, edit = false) => async dispatch => {
     try {
-        const config = {
-            headers: {
-                'Content-Type': 'application/json'
-            }
+      const config = {
+        headers: {
+          'Content-Type': 'application/json'
         }
-        const res = await axios.post('/api/profile', formData, config);
-        dispatch({
-            type: GET_PROFILE,
-            payload: res.data
-        });
-        dispatch(setAlert(edit ? 'Profile updated' : 'Profile Created', 'success'));
-        if (!edit) {
-            history.push('/dashboard');
-        }
+      };
+  
+      const res = await axios.post('/api/profile', formData, config);
+  
+      dispatch({
+        type: GET_PROFILE,
+        payload: res.data
+      });
+  
+      dispatch(setAlert(edit ? 'Profile Updated' : 'Profile Created', 'success'));
+  
+      if (!edit) {
+        history.push('/dashboard');
+      }
     } catch (err) {
         const errors = err.response.data.errors;
         if (errors) {
@@ -150,8 +208,7 @@ export const deleteEducation = id => async dispatch => {
 export const deleteAccount = () => async dispatch => {
     if(window.confirm('Are you sure? This can not be undone')) {
         try {
-            // eslint-disable-next-line
-            const res = await axios.delete('/api/profile');
+            await axios.delete('/api/profile');
             dispatch({
                 type: CLEAR_PROFILE
             });
@@ -169,3 +226,5 @@ export const deleteAccount = () => async dispatch => {
         }
     }
 };
+
+
