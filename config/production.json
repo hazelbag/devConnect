@@ -1,0 +1,6 @@
+{
+	"mongoURI": "mongodb+srv://hazelbag:devConnect2020@devconnect-sbkps.mongodb.net/test?retryWrites=true&w=majority",
+	"jwtSecret": "hazelbagssecrettoken",
+	"githubClientId": "12ac2b9b661903c9e0b5",
+	"githubSecret": "b8ee21ef7b45a86e061ce2ef8fd35b219a1d82b3"
+}
